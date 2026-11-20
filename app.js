@@ -5,6 +5,46 @@
   const { AXES, TYPES, QUESTIONS, FAMILIES, STATS, SOURCES } = DATA;
   const TEST_KEY = "madtype_progress_v1";
   const RESULT_KEY = "madtype_last_result_v1";
+  const SITE_URL = "https://sean-daniel.github.io/mad16/";
+  const QR_MATRIX = [
+    "1111111000010001010111101011101111111",
+    "1000001010111110100110000000101000001",
+    "1011101001100011110000100011001011101",
+    "1011101001110101100111100101101011101",
+    "1011101001101000101101100111001011101",
+    "1000001011100110101000000110101000001",
+    "1111111010101010101010101010101111111",
+    "0000000010011110011000010010000000000",
+    "0000111100001110110011001111001100010",
+    "1111010011011010111001000000101110010",
+    "1000111100100000011101010110110000100",
+    "1010100100010111011010010010010001100",
+    "0111101001011011101011101001011101100",
+    "0101100110110100100011100001110010100",
+    "0111101001110111001101101011010101100",
+    "1010000011101111111001001001100100100",
+    "0010001100010101010000111011011101101",
+    "0001010010111010111001011011100011100",
+    "1011001100011100100011100111010001000",
+    "1001110110100100011111011011111101110",
+    "1011001100110001100011001001001000111",
+    "1010100000011100000011100011000011010",
+    "0011111001001011111010101111101001110",
+    "1101100110101100110001100100111100110",
+    "0111101110000100001110011101110110111",
+    "1000010001110011001001100110001111000",
+    "0011001000010000001101000101010111000",
+    "0001010111010000000001001011101111101",
+    "1100111110111000110101011000111110111",
+    "0000000011010110001000110010100011000",
+    "1111111011110110100110011110101011100",
+    "1000001010110001011110010000100010100",
+    "1011101011010000011100100000111111111",
+    "1011101000000010100111101010101001100",
+    "1011101001011011111110111010001100110",
+    "1000001001110010010110010011001000110",
+    "1111111000111000111100101001000100111"
+  ];
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -26,6 +66,8 @@
 
   let lastSavedResult = null;
   let toastTimer = null;
+  let shareCardBlob = null;
+  let shareCardName = "疯格-MAD16.png";
 
   function escapeHTML(value) {
     return String(value)
@@ -532,7 +574,8 @@
   function syncBodyLock() {
     const testOpen = !$("#test-overlay").hidden;
     const modalOpen = !$("#type-modal").hidden;
-    document.body.classList.toggle("is-locked", testOpen || modalOpen);
+    const shareOpen = !$("#share-sheet").hidden;
+    document.body.classList.toggle("is-locked", testOpen || modalOpen || shareOpen);
   }
 
   function showToast(message) {
@@ -549,6 +592,10 @@
     try {
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== "object") return false;
+      if (Number(parsed.questionCount) !== QUESTIONS.length) {
+        safeRemove(TEST_KEY);
+        return false;
+      }
       const answers = parsed.answers && typeof parsed.answers === "object" ? parsed.answers : {};
       Object.keys(answers).forEach((key) => {
         if (!QUESTIONS.some((question) => question.id === key)) delete answers[key];
@@ -560,12 +607,14 @@
       state.displayOrder = parsed.displayOrder && typeof parsed.displayOrder === "object" ? parsed.displayOrder : {};
       return true;
     } catch (error) {
+      safeRemove(TEST_KEY);
       return false;
     }
   }
 
   function saveProgress() {
     safeSet(TEST_KEY, JSON.stringify({
+      questionCount: QUESTIONS.length,
       answers: state.answers,
       current: state.current,
       displayOrder: state.displayOrder
@@ -577,9 +626,13 @@
     if (!raw) return null;
     try {
       const parsed = JSON.parse(raw);
-      if (!parsed || !TYPES[parsed.code] || !Array.isArray(parsed.rows)) return null;
+      if (!parsed || !TYPES[parsed.code] || !Array.isArray(parsed.rows) || Number(parsed.questionCount) !== QUESTIONS.length) {
+        safeRemove(RESULT_KEY);
+        return null;
+      }
       return parsed;
     } catch (error) {
+      safeRemove(RESULT_KEY);
       return null;
     }
   }
@@ -795,6 +848,7 @@
     else if (clarity >= 62) band = "倾向型";
 
     return {
+      questionCount: QUESTIONS.length,
       code,
       altCode,
       rows,
@@ -971,15 +1025,23 @@
       </section>
 
       <section class="result-actions">
-        <button class="btn btn-primary" id="save-card" type="button">保存结果卡 <span>↓</span></button>
+        <button class="btn btn-primary btn-share" id="save-card" type="button">生成分享照片 <span>↗</span></button>
         <button class="btn btn-ghost" id="copy-result" type="button">复制结果文案</button>
         <button class="btn btn-ghost" id="retest" type="button">重新测一次</button>
         <button class="btn btn-ghost" id="browse-types" type="button">看全部 16 型</button>
       </section>
       <p class="result-fineprint">
-        * 结果反映的是你在这 28 道题里的自我报告，不是临床评估。类型会变，人也会变。
+        * 结果反映的是你在这 12 道题里的自我报告，不是临床评估。类型会变，人也会变。
         如果最近持续低落、失眠、功能受损，或出现自伤想法，请优先联系专业帮助。心理援助热线：12356。
       </p>
+      <section class="result-share-nudge">
+        <div>
+          <span>SHARE CARD</span>
+          <strong>把这张疯格发出去</strong>
+          <p>照片自带本站二维码和网址。朋友扫一下，就能测自己的。</p>
+        </div>
+        <button class="btn btn-primary" type="button" data-start-share>生成分享照片 →</button>
+      </section>
     `;
 
     $$("[data-type]", $("#result-content")).forEach((node) => {
@@ -992,6 +1054,9 @@
       });
     });
     $("#save-card").addEventListener("click", () => downloadCard(result));
+    $$("[data-start-share]", $("#result-content")).forEach((button) => {
+      button.addEventListener("click", () => downloadCard(result));
+    });
     $("#copy-result").addEventListener("click", () => copyResult(result));
     $("#retest").addEventListener("click", () => startTest({ fresh: true }));
     $("#browse-types").addEventListener("click", () => {
@@ -1057,6 +1122,28 @@
     });
     if (line) ctx.fillText(line, x, currentY);
     return currentY;
+  }
+
+  function drawQRCode(ctx, x, y, size) {
+    const count = QR_MATRIX.length;
+    const cell = size / count;
+    ctx.save();
+    ctx.fillStyle = "#fbf8ef";
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = "#11110f";
+    QR_MATRIX.forEach((row, rowIndex) => {
+      for (let col = 0; col < row.length; col += 1) {
+        if (row[col] === "1") {
+          ctx.fillRect(
+            Math.round(x + col * cell),
+            Math.round(y + rowIndex * cell),
+            Math.ceil(cell),
+            Math.ceil(cell)
+          );
+        }
+      }
+    });
+    ctx.restore();
   }
 
   function drawSigilCanvas(ctx, code, cx, cy, radius) {
@@ -1208,10 +1295,10 @@
 
     ctx.fillStyle = type.soft;
     ctx.beginPath();
-    ctx.arc(860, 300, 250, 0, Math.PI * 2);
+    ctx.arc(854, 286, 214, 0, Math.PI * 2);
     ctx.fill();
 
-    drawSigilCanvas(ctx, result.code, 830, 330, 230);
+    drawSigilCanvas(ctx, result.code, 854, 286, 184);
 
     ctx.fillStyle = ink;
     ctx.font = '700 22px "SFMono-Regular", "Roboto Mono", monospace';
@@ -1222,23 +1309,23 @@
 
     ctx.fillStyle = type.color;
     ctx.beginPath();
-    ctx.roundRect(72, 170, 132, 44, 10);
+    ctx.roundRect(72, 156, 138, 46, 10);
     ctx.fill();
     ctx.fillStyle = ink;
     ctx.font = '700 22px "SFMono-Regular", "Roboto Mono", monospace';
-    ctx.fillText(result.code, 94, 200);
+    ctx.fillText(result.code, 96, 187);
 
     ctx.fillStyle = ink;
-    ctx.font = '700 112px "Songti SC", "STSong", serif';
-    ctx.fillText(type.name, 66, 340);
+    ctx.font = '700 108px "Songti SC", "STSong", serif';
+    ctx.fillText(type.name, 66, 320);
 
     ctx.fillStyle = "#2b2a26";
-    ctx.font = '500 36px "PingFang SC", "Hiragino Sans GB", sans-serif';
-    wrapText(ctx, type.tagline, 72, 402, 780, 50);
+    ctx.font = '500 34px "PingFang SC", "Hiragino Sans GB", sans-serif';
+    wrapText(ctx, type.tagline, 72, 380, 620, 48);
 
     ctx.fillStyle = muted;
-    ctx.font = '400 24px "Songti SC", "STSong", serif';
-    wrapText(ctx, type.quote, 72, 510, 760, 40);
+    ctx.font = '400 23px "Songti SC", "STSong", serif';
+    wrapText(ctx, type.quote, 72, 466, 640, 38);
 
     const barStart = 650;
     ctx.fillStyle = muted;
@@ -1263,7 +1350,7 @@
       ctx.fillText(`${row.pct}%`, 884, y + 6);
     });
 
-    const strengthY = 960;
+    const strengthY = 948;
     ctx.fillStyle = ink;
     ctx.font = '700 28px "Songti SC", "STSong", serif';
     ctx.fillText("隐藏技能", 72, strengthY);
@@ -1285,16 +1372,37 @@
     ctx.font = '400 22px "PingFang SC", "Hiragino Sans GB", sans-serif';
     wrapText(ctx, type.rx[0], 552, strengthY + 46, 440, 36);
 
-    ctx.fillStyle = "rgba(17,17,15,.16)";
-    ctx.fillRect(72, 1210, 936, 1);
+    ctx.fillStyle = "rgba(17,17,15,.22)";
+    ctx.fillRect(72, 1108, 936, 2);
+
+    drawQRCode(ctx, 72, 1146, 236);
+    ctx.strokeStyle = "rgba(17,17,15,.24)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(72, 1146, 236, 236);
+
+    ctx.fillStyle = ink;
+    ctx.font = '700 36px "Songti SC", "STSong", serif';
+    ctx.fillText("扫码测测你的疯格", 348, 1192);
     ctx.fillStyle = muted;
-    ctx.font = '400 16px "SFMono-Regular", "Roboto Mono", monospace';
-    ctx.fillText(`CLARITY ${result.clarity}% / ${result.band}`, 72, 1254);
-    ctx.fillText("不是诊断，是一面镜子。", 72, 1286);
+    ctx.font = '400 22px "PingFang SC", "Hiragino Sans GB", sans-serif';
+    wrapText(ctx, "12 道题 · 4 个轴 · 16 种疯格 · 约 1 分钟", 348, 1238, 620, 36);
+
+    ctx.fillStyle = type.color;
+    ctx.beginPath();
+    ctx.roundRect(348, 1294, 660, 62, 12);
+    ctx.fill();
+    ctx.fillStyle = ink;
+    ctx.font = '700 21px "SFMono-Regular", "Roboto Mono", monospace';
+    ctx.fillText(SITE_URL, 370, 1334);
+
+    ctx.fillStyle = muted;
+    ctx.font = '400 17px "PingFang SC", "Hiragino Sans GB", sans-serif';
+    ctx.fillText("非临床自我观察 · 不诊断、不治疗、不替代专业帮助", 348, 1392);
+
     ctx.textAlign = "right";
     ctx.fillStyle = ink;
-    ctx.font = '700 18px "SFMono-Regular", "Roboto Mono", monospace';
-    ctx.fillText("#疯格 #MAD16", 1008, 1286);
+    ctx.font = '700 17px "SFMono-Regular", "Roboto Mono", monospace';
+    ctx.fillText("#疯格 #MAD16", 1008, 1392);
     ctx.textAlign = "left";
 
     canvas.toBlob((blob) => {
@@ -1302,21 +1410,67 @@
         showToast("生成图片失败，请重试。");
         return;
       }
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `疯格-${result.code}-${type.name}.png`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 2000);
-      showToast("结果卡已生成。");
+      openShareSheet(blob, `疯格-${result.code}-${type.name}.png`);
     }, "image/png");
+  }
+
+  function openShareSheet(blob, filename) {
+    const preview = $("#share-preview");
+    const sheet = $("#share-sheet");
+    if (!preview || !sheet) return;
+    if (shareCardBlob) URL.revokeObjectURL(shareCardBlob.url);
+    shareCardName = filename;
+    const url = URL.createObjectURL(blob);
+    shareCardBlob = { blob, url };
+    preview.innerHTML = `<img src="${url}" alt="${escapeHTML(filename)}" width="1080" height="1440">`;
+    sheet.hidden = false;
+    document.body.classList.add("is-locked");
+    sheet.scrollTop = 0;
+    $("#share-save").focus({ preventScroll: true });
+  }
+
+  function closeShareSheet() {
+    const sheet = $("#share-sheet");
+    if (!sheet || sheet.hidden) return;
+    sheet.hidden = true;
+    syncBodyLock();
+  }
+
+  function saveShareCard() {
+    if (!shareCardBlob) return;
+    const link = document.createElement("a");
+    link.href = shareCardBlob.url;
+    link.download = shareCardName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    showToast("已保存到你的下载目录。");
+  }
+
+  async function shareCardNatively() {
+    if (!shareCardBlob) return;
+    const file = new File([shareCardBlob.blob], shareCardName, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: "我的疯格 MAD-16",
+          text: "测测你最近的疯癫类型：https://sean-daniel.github.io/mad16/"
+        });
+        return;
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+      }
+    }
+    showToast("当前浏览器不支持直接分享，请长按图片保存。");
   }
 
   function initHeader() {
     const header = $("#site-header");
-    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 24);
+    const onScroll = () => {
+      header.classList.toggle("is-scrolled", window.scrollY > 24);
+      document.body.classList.toggle("has-scrolled", window.scrollY > 320);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
   }
@@ -1370,6 +1524,10 @@
     });
 
     document.addEventListener("keydown", (event) => {
+      if (!document.querySelector("#share-sheet").hidden && event.key === "Escape") {
+        closeShareSheet();
+        return;
+      }
       const modalOpen = !$("#type-modal").hidden;
       if (modalOpen && event.key === "Escape") {
         closeType();
@@ -1404,6 +1562,11 @@
         /* Don't close on backdrop click; the test is full-screen and accidental closes are annoying. */
       }
     });
+
+    $("#share-close").addEventListener("click", closeShareSheet);
+    $$("[data-close-share]").forEach((node) => node.addEventListener("click", closeShareSheet));
+    $("#share-save").addEventListener("click", saveShareCard);
+    $("#share-system").addEventListener("click", shareCardNatively);
   }
 
   function initUrlType() {

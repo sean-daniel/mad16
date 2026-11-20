@@ -2,9 +2,18 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="疯格 MAD-16：用 28 道题，给最近一个月的你出一份非临床的当代精神状态档案。">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="疯格 MAD-16：用 12 道题，给最近一个月的你出一份非临床的当代精神状态档案。">
   <meta name="theme-color" content="#F2EFE6">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="疯格">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="疯格 MAD-16 · 测测你最近的疯癫类型">
+  <meta property="og:description" content="4 个轴、16 种疯格、12 道题。给最近一个月的你一份非临床精神状态说明书。">
+  <meta property="og:url" content="https://sean-daniel.github.io/mad16/">
+  <meta property="og:site_name" content="疯格 MAD-16">
   <title>疯格 MAD-16 · 当代精神状态非正式鉴定</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2311110f'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23f2efe6'%3E疯%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
@@ -40,12 +49,12 @@
           <span class="eyebrow-en">MAD-16 / V0.1</span>
         </div>
         <h1>
-          正常是一种人设。<br>
-          <em>发疯</em>是一种应对。
+          <span>正常是一种人设。</span>
+          <span><em>发疯</em>是一种应对。</span>
         </h1>
         <p class="hero-lede">
           把「发疯文学」「班味」「精神内耗」翻译成 4 个轴、16 种疯格。
-          28 道题，约 3 分钟，给最近一个月的你一份
+          <span class="hero-lede-full">12 道题，约 1 分钟，</span>给最近一个月的你一份
           <strong>非临床</strong>说明书。
         </p>
         <div class="hero-actions">
@@ -55,7 +64,7 @@
           <a class="btn btn-ghost btn-large" href="#types">先看 16 型</a>
         </div>
         <p class="hero-meta">
-          <span>28 题</span>
+          <span>12 题</span>
           <span>无需登录</span>
           <span>结果只存在本机</span>
           <span>不是心理诊断</span>
@@ -238,12 +247,12 @@
             <button class="btn btn-primary btn-large" data-start-test>
               开始鉴定 <span aria-hidden="true">→</span>
             </button>
-            <span class="test-panel-meta">28 题 · 约 3 分钟 · 不收集数据</span>
+            <span class="test-panel-meta">12 题 · 约 1 分钟 · 不收集数据</span>
           </div>
         </div>
         <div class="test-preview" aria-hidden="true">
           <div class="preview-top">
-            <span>QUESTION 07 / 28</span>
+            <span>QUESTION 05 / 12</span>
             <span>失控策略</span>
           </div>
           <div class="preview-progress"><span></span></div>
@@ -298,7 +307,7 @@
           <h3>为什么不做「精神病测试」</h3>
           <p>
             临床评估需要专业受训、结构化访谈、病程与功能损害判断，
-            不是 28 道网络题能完成的。我们更愿意把它做成一面镜子：
+            不是 12 道网络题能完成的。我们更愿意把它做成一面镜子：
             让你看见自己最近在用哪种方式硬撑，以及这种方式的账单是什么。
           </p>
           <p class="method-small">
@@ -344,6 +353,14 @@
     </div>
   </footer>
 
+  <div class="mobile-dock" id="mobile-dock">
+    <button class="mobile-dock-primary" type="button" data-start-test>
+      <span>开始做题</span>
+      <small>12 题 · 约 1 分钟</small>
+    </button>
+    <a class="mobile-dock-link" href="#types">先看 16 型</a>
+  </div>
+
   <div class="overlay" id="test-overlay" hidden>
     <div class="test-shell" role="dialog" aria-modal="true" aria-labelledby="test-title">
       <header class="test-header">
@@ -351,7 +368,7 @@
           <span class="brand-mark small">疯</span>
           <div>
             <strong id="test-title">疯格鉴定</strong>
-            <span id="test-progress-label">第 01 / 28 题</span>
+            <span id="test-progress-label">第 01 / 12 题</span>
           </div>
         </div>
         <button class="icon-btn" id="test-close" type="button" aria-label="关闭测试">×</button>
@@ -374,6 +391,7 @@
               ← 上一题
             </button>
             <span class="keyboard-hint">按 <kbd>1</kbd> / <kbd>2</kbd> 选择 · 按 <kbd>←</kbd> 返回</span>
+            <span class="touch-hint">点选一项，自动进入下一题</span>
           </div>
         </section>
 
@@ -393,6 +411,26 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="share-sheet" id="share-sheet" hidden>
+    <div class="share-sheet-backdrop" data-close-share></div>
+    <div class="share-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="share-title">
+      <div class="share-sheet-head">
+        <div>
+          <span class="share-kicker">SHARE YOUR SPECIMEN</span>
+          <h2 id="share-title">分享照片已生成</h2>
+          <p>长按图片保存；发到社交平台时，二维码和网址都能带人回到这里。</p>
+        </div>
+        <button class="icon-btn" id="share-close" type="button" aria-label="关闭分享">×</button>
+      </div>
+      <div class="share-preview" id="share-preview"></div>
+      <div class="share-sheet-actions">
+        <button class="btn btn-primary" id="share-save" type="button">保存到相册 <span>↓</span></button>
+        <button class="btn btn-ghost" id="share-system" type="button">系统分享 <span>↗</span></button>
+      </div>
+      <p class="share-note">若浏览器不支持直接下载，请长按上方图片保存。</p>
+    </div>
+  </div>
 
   <noscript>
     <div class="noscript">这个页面需要 JavaScript 才能做题。请启用 JavaScript，或直接阅读页面里的类型图鉴。</div>
