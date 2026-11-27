@@ -5,6 +5,8 @@
   const { AXES, TYPES, QUESTIONS, FAMILIES, STATS, SOURCES } = DATA;
   const TEST_KEY = "madtype_progress_v1";
   const RESULT_KEY = "madtype_last_result_v1";
+  const TEST_VERSION = 2;
+  const TIE_BREAK_QUESTION = { EI: "q02", CA: "q12", NR: "q07", HL: "q06" };
   const SITE_URL = "https://sean-daniel.github.io/mad16/";
   const QR_MATRIX = [
     "1111111000010001010111101011101111111",
@@ -592,20 +594,19 @@
     try {
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== "object") return false;
-      if (Number(parsed.questionCount) !== QUESTIONS.length) {
+      if (Number(parsed.version) !== TEST_VERSION) {
         safeRemove(TEST_KEY);
         return false;
       }
       const answers = parsed.answers && typeof parsed.answers === "object" ? parsed.answers : {};
       Object.keys(answers).forEach((key) => {
-        if (!QUESTIONS.some((question) => question.id === key)) delete answers[key];
+        const question = QUESTIONS.find((item) => item.id === key);
+        if (!question || !question.options.some((option) => option.id === answers[key])) delete answers[key];
       });
-      const answered = Object.keys(answers).length;
-      if (answered === 0) return false;
       state.answers = answers;
       state.current = Math.min(QUESTIONS.length - 1, Math.max(0, Number(parsed.current) || 0));
       state.displayOrder = parsed.displayOrder && typeof parsed.displayOrder === "object" ? parsed.displayOrder : {};
-      return true;
+      return Object.keys(answers).length > 0;
     } catch (error) {
       safeRemove(TEST_KEY);
       return false;
@@ -614,7 +615,7 @@
 
   function saveProgress() {
     safeSet(TEST_KEY, JSON.stringify({
-      questionCount: QUESTIONS.length,
+      version: TEST_VERSION,
       answers: state.answers,
       current: state.current,
       displayOrder: state.displayOrder
@@ -626,7 +627,7 @@
     if (!raw) return null;
     try {
       const parsed = JSON.parse(raw);
-      if (!parsed || !TYPES[parsed.code] || !Array.isArray(parsed.rows) || Number(parsed.questionCount) !== QUESTIONS.length) {
+      if (!parsed || !TYPES[parsed.code] || !Array.isArray(parsed.rows) || Number(parsed.version) !== TEST_VERSION) {
         safeRemove(RESULT_KEY);
         return null;
       }
@@ -729,14 +730,13 @@
   function renderQuestion() {
     const question = QUESTIONS[state.current];
     if (!question) return;
-    const axis = axisByKey[question.axis];
-    const answered = Object.keys(state.answers).length;
     const progress = ((state.current + 1) / QUESTIONS.length) * 100;
+    const axisLabel = question.label || "双轴情境";
 
     $("#test-progress-label").textContent = `第 ${pad(state.current + 1)} / ${QUESTIONS.length} 题`;
     $("#test-progress-fill").style.width = `${progress}%`;
     $("#question-index").textContent = `QUESTION ${pad(state.current + 1)}`;
-    $("#question-axis").textContent = axis.label;
+    $("#question-axis").textContent = axisLabel;
     $("#question-text").textContent = question.text;
 
     const dots = $("#test-dots");
@@ -747,22 +747,25 @@
     }).join("");
 
     if (!state.displayOrder[question.id]) {
-      state.displayOrder[question.id] = shuffle([0, 1], hashString(question.id + question.text));
+      state.displayOrder[question.id] = shuffle(
+        question.options.map((_, index) => index),
+        hashString(question.id + question.text)
+      );
     }
     const order = state.displayOrder[question.id];
     const options = $("#question-options");
     options.innerHTML = order.map((optionIndex, displayIndex) => {
       const option = question.options[optionIndex];
-      const selected = state.answers[question.id] === option.pole;
+      const selected = state.answers[question.id] === option.id;
       return `
-        <button class="option-btn${selected ? " is-selected" : ""}" type="button" data-pole="${option.pole}">
-          <span class="option-key">${displayIndex === 0 ? "1" : "2"}</span>
+        <button class="option-btn${selected ? " is-selected" : ""}" type="button" data-option="${option.id}">
+          <span class="option-key">${displayIndex + 1}</span>
           <span>${escapeHTML(option.text)}</span>
         </button>
       `;
     }).join("");
     $$(".option-btn", options).forEach((button) => {
-      button.addEventListener("click", () => choose(button.dataset.pole));
+      button.addEventListener("click", () => choose(button.dataset.option));
     });
 
     $("#test-back").disabled = state.current === 0;
@@ -773,13 +776,18 @@
     }
   }
 
-  function choose(pole) {
+  function choose(optionId) {
     if (state.advancing) return;
     state.advancing = true;
     const question = QUESTIONS[state.current];
-    state.answers[question.id] = pole;
+    const option = question.options.find((item) => item.id === optionId);
+    if (!option) {
+      state.advancing = false;
+      return;
+    }
+    state.answers[question.id] = optionId;
     saveProgress();
-    const selected = $(`.option-btn[data-pole="${pole}"]`);
+    const selected = $(`.option-btn[data-option="${optionId}"]`);
     if (selected) selected.classList.add("is-selected");
     window.setTimeout(() => {
       if (state.current < QUESTIONS.length - 1) {
@@ -807,29 +815,51 @@
 
   function computeResult() {
     const counts = { E: 0, I: 0, C: 0, A: 0, N: 0, R: 0, H: 0, L: 0 };
+    const scoreByQuestion = {};
     QUESTIONS.forEach((question) => {
-      const pole = state.answers[question.id];
-      if (pole && counts[pole] !== undefined) counts[pole] += 1;
+      const answer = state.answers[question.id];
+      const option = question.options.find((item) => item.id === answer);
+      if (!option) return;
+      scoreByQuestion[question.id] = option.poles;
+      Object.values(option.poles).forEach((pole) => {
+        if (counts[pole] !== undefined) counts[pole] += 1;
+      });
     });
-
     const rows = AXES.map((axis) => {
-      const aCount = counts[axis.a];
-      const bCount = counts[axis.b];
-      const total = aCount + bCount || 1;
-      const winner = aCount > bCount ? axis.a : axis.b;
-      const pctA = Math.round((aCount / total) * 100);
+      const questionScores = {};
+      Object.entries(scoreByQuestion).forEach(([questionId, poles]) => {
+        if (poles[axis.key]) questionScores[questionId] = poles[axis.key];
+      });
+      const aCount = Object.values(questionScores).filter((pole) => pole === axis.a).length;
+      const bCount = Object.values(questionScores).filter((pole) => pole === axis.b).length;
+      let tie = false;
+      const tieQuestion = TIE_BREAK_QUESTION[axis.key];
+      if (aCount === bCount && tieQuestion && questionScores[tieQuestion]) {
+        const pole = questionScores[tieQuestion];
+        if (pole === axis.a) tie = axis.a;
+        if (pole === axis.b) tie = axis.b;
+      }
+      const effectiveA = aCount + (tie === axis.a ? 1 : 0);
+      const effectiveB = bCount + (tie === axis.b ? 1 : 0);
+      const total = effectiveA + effectiveB || 1;
+      const winner = effectiveA >= effectiveB ? axis.a : axis.b;
+      const pctA = Math.round((effectiveA / total) * 100);
       const pctB = 100 - pctA;
       const winnerPct = winner === axis.a ? pctA : pctB;
       return {
         axis,
         aCount,
         bCount,
+        rawACount: aCount - (tie === axis.a ? 1 : 0),
+        rawBCount: bCount - (tie === axis.b ? 1 : 0),
         total,
         winner,
         pctA,
         pctB,
         pct: winnerPct,
-        margin: Math.abs(aCount - bCount)
+        margin: Math.abs(aCount - bCount),
+        tie: Boolean(tie),
+        tieQuestion: tie ? tieQuestion : null
       };
     });
 
@@ -848,6 +878,7 @@
     else if (clarity >= 62) band = "倾向型";
 
     return {
+      version: TEST_VERSION,
       questionCount: QUESTIONS.length,
       code,
       altCode,
@@ -913,7 +944,10 @@
     }).join("");
 
     const logicMarkup = result.rows.map((row) => {
-      return `<div><code>${row.axis.a} ${row.aCount} / ${row.axis.b} ${row.bCount}</code> → ${row.winner} · ${row.axis.a === row.winner ? row.axis.aName : row.axis.bName} ${row.pct}%</div>`;
+      const tieNote = row.tie
+        ? `；3:3 平票，用关键题 <code>${row.tieQuestion.toUpperCase()}</code> 加权`
+        : "";
+      return `<div><code>${row.axis.a} ${row.rawACount ?? row.aCount} / ${row.axis.b} ${row.rawBCount ?? row.bCount}</code> → ${row.winner} · ${row.axis.a === row.winner ? row.axis.aName : row.axis.bName} ${row.pct}%${tieNote}</div>`;
     }).join("");
 
     $("#result-content").innerHTML = `
@@ -1031,7 +1065,8 @@
         <button class="btn btn-ghost" id="browse-types" type="button">看全部 16 型</button>
       </section>
       <p class="result-fineprint">
-        * 结果反映的是你在这 12 道题里的自我报告，不是临床评估。类型会变，人也会变。
+        * 结果反映的是你在这 ${result.questionCount} 道题里的自我报告，不是临床评估。类型会变，人也会变。
+        每题会同时影响两个轴；如果某轴 3:3，则用该轴的关键题再判一次，结果逻辑里会标明。
         如果最近持续低落、失眠、功能受损，或出现自伤想法，请优先联系专业帮助。心理援助热线：12356。
       </p>
       <section class="result-share-nudge">
@@ -1539,20 +1574,21 @@
         closeTest();
         return;
       }
+      if (event.target && event.target.closest && event.target.closest("input, textarea, select")) return;
       if ($("#test-result-view").hidden === false) return;
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         goBack();
         return;
       }
-      if (event.key === "1" || event.key === "2") {
+      if (["1", "2", "3", "4"].includes(event.key)) {
         const question = QUESTIONS[state.current];
         if (!question) return;
-        const order = state.displayOrder[question.id] || [0, 1];
+        const order = state.displayOrder[question.id] || question.options.map((_, index) => index);
         const option = question.options[order[Number(event.key) - 1]];
         if (option) {
           event.preventDefault();
-          choose(option.pole);
+          choose(option.id);
         }
       }
     });

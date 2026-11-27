@@ -1781,7 +1781,7 @@ section[id] {
   align-items: flex-start;
   gap: 18px;
   width: 100%;
-  padding: 22px 24px;
+  padding: 20px 22px;
   border: 1.5px solid var(--ink);
   border-radius: 18px;
   background: var(--paper-light);
@@ -1790,6 +1790,10 @@ section[id] {
   line-height: 1.6;
   cursor: pointer;
   transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+
+.option-btn > span:last-child {
+  min-width: 0;
 }
 
 .option-btn:hover {
@@ -3633,23 +3637,23 @@ kbd {
   }
 
   .question-text {
-    margin: 16px 0 22px;
-    font-size: clamp(28px, 8.4vw, 38px);
-    line-height: 1.2;
+    margin: 14px 0 18px;
+    font-size: clamp(24px, 7.2vw, 31px);
+    line-height: 1.24;
     letter-spacing: -0.04em;
   }
 
   .question-options {
-    gap: 10px;
+    gap: 8px;
   }
 
   .option-btn {
-    gap: 12px;
-    min-height: 74px;
-    padding: 15px 14px;
-    border-radius: 16px;
-    font-size: 14px;
-    line-height: 1.55;
+    gap: 10px;
+    min-height: 64px;
+    padding: 12px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .option-btn:hover {
@@ -3668,9 +3672,10 @@ kbd {
   }
 
   .option-key {
-    width: 30px;
-    height: 30px;
-    border-radius: 9px;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    font-size: 9px;
   }
 
   .question-footer {
