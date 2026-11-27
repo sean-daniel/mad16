@@ -596,144 +596,144 @@
       id: "q01",
       pair: ["EI", "CA"],
       label: "工作现场",
-      text: "周五 18:00，领导在群里丢来一句「周一早上要」。你最近一个月最可能先做的是：",
+      text: "周五 18:00，老板丢来一句「周一要」。你先干嘛？",
       options: [
-        { id: "q01a", poles: { EI: "E", CA: "C" }, text: "在群里回一句「收到（微笑着死去）」，同时拉群、列优先级，先救能救的。" },
-        { id: "q01b", poles: { EI: "I", CA: "C" }, text: "不回群，自己把任务拆成清单，默默做到能交。" },
-        { id: "q01c", poles: { EI: "E", CA: "A" }, text: "先在群里发疯吐槽两句，等别人接话或分工，自己先不动。" },
-        { id: "q01d", poles: { EI: "I", CA: "A" }, text: "把手机扣下，先吃饭洗澡躺一会儿，周一再面对。" }
+        { id: "q01a", poles: { EI: "E", CA: "C" }, text: "群里回「收到」，顺手拉群分工。" },
+        { id: "q01b", poles: { EI: "I", CA: "C" }, text: "不吭声，列清单自己干。" },
+        { id: "q01c", poles: { EI: "E", CA: "A" }, text: "群里先嚎两句，等别人接。" },
+        { id: "q01d", poles: { EI: "I", CA: "A" }, text: "手机一扣，先过周末。" }
       ]
     },
     {
       id: "q02",
       pair: ["EI", "NR"],
       label: "朋友现场",
-      text: "朋友问「最近怎么样」。你最近一个月最可能：",
+      text: "朋友问「最近咋样」，你咋回？",
       options: [
-        { id: "q02a", poles: { EI: "E", NR: "N" }, text: "发一条夸张比喻或梗图，等朋友接梗，笑着把话题带过去。" },
-        { id: "q02b", poles: { EI: "I", NR: "N" }, text: "说「像个加载失败的网页」，然后自己回去慢慢消化。" },
-        { id: "q02c", poles: { EI: "E", NR: "R" }, text: "直接把最近发生的三件破事按顺序讲一遍。" },
-        { id: "q02d", poles: { EI: "I", NR: "R" }, text: "说「还行」，然后在备忘录里把细节写清楚。" }
+        { id: "q02a", poles: { EI: "E", NR: "N" }, text: "甩个梗图：我很好，就是快死了。" },
+        { id: "q02b", poles: { EI: "I", NR: "N" }, text: "回「加载中…」，然后潜水。" },
+        { id: "q02c", poles: { EI: "E", NR: "R" }, text: "直接开讲最近三件破事。" },
+        { id: "q02d", poles: { EI: "I", NR: "R" }, text: "说「还行」，回备忘录细写。" }
       ]
     },
     {
       id: "q03",
       pair: ["EI", "HL"],
       label: "会议室",
-      text: "开会时你的方案被当众否掉。你最近一个月最可能：",
+      text: "方案被当众否了，你第一反应？",
       options: [
-        { id: "q03a", poles: { EI: "E", HL: "H" }, text: "当场反问「具体哪里不行」，语速和音量先上来。" },
-        { id: "q03b", poles: { EI: "I", HL: "H" }, text: "表面点头，回工位后心跳很快，写一大段反驳。" },
-        { id: "q03c", poles: { EI: "E", HL: "L" }, text: "当场只回一句冷话或笑一下，让气氛自己凝固。" },
-        { id: "q03d", poles: { EI: "I", HL: "L" }, text: "不解释，回去默默把对方从合作名单里删掉。" }
+        { id: "q03a", poles: { EI: "E", HL: "H" }, text: "当场追问：哪里不行？" },
+        { id: "q03b", poles: { EI: "I", HL: "H" }, text: "先点头，回工位狂写反驳。" },
+        { id: "q03c", poles: { EI: "E", HL: "L" }, text: "笑一下：行，您说得对。" },
+        { id: "q03d", poles: { EI: "I", HL: "L" }, text: "不解释，默默把人拉黑。" }
       ]
     },
     {
       id: "q04",
       pair: ["CA", "NR"],
       label: "截止日前夜",
-      text: "项目已经失控，明天就是 deadline。你最近一个月最可能：",
+      text: "项目明天交，现在还在 ICU。先干啥？",
       options: [
-        { id: "q04a", poles: { CA: "C", NR: "N" }, text: "先画一张「还能救的 60%」草图，用图把混乱讲明白。" },
-        { id: "q04b", poles: { CA: "A", NR: "N" }, text: "先发一句「草台班子」自嘲，等局面自己明朗。" },
-        { id: "q04c", poles: { CA: "C", NR: "R" }, text: "列优先级、拉群分工，按清单先救能救的。" },
-        { id: "q04d", poles: { CA: "A", NR: "R" }, text: "先点外卖、收拾桌面，只做最低限度能交的。" }
+        { id: "q04a", poles: { CA: "C", NR: "N" }, text: "画张草图：还能救 60%。" },
+        { id: "q04b", poles: { CA: "A", NR: "N" }, text: "群里自嘲：草台班子又开工。" },
+        { id: "q04c", poles: { CA: "C", NR: "R" }, text: "拉群分工，列清单救火。" },
+        { id: "q04d", poles: { CA: "A", NR: "R" }, text: "点外卖，按最低标准交。" }
       ]
     },
     {
       id: "q05",
       pair: ["CA", "HL"],
       label: "临时加塞",
-      text: "临时被塞进一个不属于你的任务。你最近一个月最可能：",
+      text: "又有人往你手里塞活。你？",
       options: [
-        { id: "q05a", poles: { CA: "C", HL: "H" }, text: "当场争资源和优先级，把冲突摆到桌面上。" },
-        { id: "q05b", poles: { CA: "A", HL: "H" }, text: "先炸一句「又来」，然后边做边骂地接下。" },
-        { id: "q05c", poles: { CA: "C", HL: "L" }, text: "不吵，直接重排计划，把不重要的砍掉。" },
-        { id: "q05d", poles: { CA: "A", HL: "L" }, text: "先不回，拖着，等对方改期或忘掉。" }
+        { id: "q05a", poles: { CA: "C", HL: "H" }, text: "当场掰扯：优先级排一下。" },
+        { id: "q05b", poles: { CA: "A", HL: "H" }, text: "先炸「又来？」，再边骂边做。" },
+        { id: "q05c", poles: { CA: "C", HL: "L" }, text: "不吵，默默砍掉别的。" },
+        { id: "q05d", poles: { CA: "A", HL: "L" }, text: "已读不回，等他自己忘。" }
       ]
     },
     {
       id: "q06",
       pair: ["NR", "HL"],
       label: "深夜现场",
-      text: "深夜 emo 上来时，你最近一个月最可能：",
+      text: "凌晨一点，emo 突然上线。你？",
       options: [
-        { id: "q06a", poles: { NR: "N", HL: "H" }, text: "写一段诗、小作文或发一首歌，把情绪推到最满。" },
-        { id: "q06b", poles: { NR: "R", HL: "H" }, text: "给朋友发长长的事件复盘，边讲边哭或边气。" },
-        { id: "q06c", poles: { NR: "N", HL: "L" }, text: "刷梗、看抽象视频，用冷幽默把情绪磨掉。" },
-        { id: "q06d", poles: { NR: "R", HL: "L" }, text: "列清单、整理房间或写日志，把情绪归档。" }
+        { id: "q06a", poles: { NR: "N", HL: "H" }, text: "写小作文/发歌，痛个大的。" },
+        { id: "q06b", poles: { NR: "R", HL: "H" }, text: "找朋友语音复盘，越说越上头。" },
+        { id: "q06c", poles: { NR: "N", HL: "L" }, text: "刷抽象视频，用冷笑话续命。" },
+        { id: "q06d", poles: { NR: "R", HL: "L" }, text: "写日志、收房间，把情绪归档。" }
       ]
     },
     {
       id: "q07",
       pair: ["EI", "NR"],
       label: "热搜现场",
-      text: "看到一条离谱热搜，你最近一个月最可能先：",
+      text: "刷到离谱热搜。你先？",
       options: [
-        { id: "q07a", poles: { EI: "E", NR: "N" }, text: "造一个梗发到群里，带情绪吐槽，等大家接。" },
-        { id: "q07b", poles: { EI: "I", NR: "N" }, text: "脑内先写十个段子，存成草稿，不急着发。" },
-        { id: "q07c", poles: { EI: "E", NR: "R" }, text: "找原始信源、截图和时间线，边查边在群里更新。" },
-        { id: "q07d", poles: { EI: "I", NR: "R" }, text: "先保存链接和证据，自己核对完再决定说不说。" }
+        { id: "q07a", poles: { EI: "E", NR: "N" }, text: "造梗发群，等人一起笑。" },
+        { id: "q07b", poles: { EI: "I", NR: "N" }, text: "脑内写十个段子，不发。" },
+        { id: "q07c", poles: { EI: "E", NR: "R" }, text: "扒时间线，边查边发群。" },
+        { id: "q07d", poles: { EI: "I", NR: "R" }, text: "先存证据，自己核完再说。" }
       ]
     },
     {
       id: "q08",
       pair: ["EI", "HL"],
       label: "关系现场",
-      text: "别人道歉了，你最近一个月最可能：",
+      text: "对方道歉了，你？",
       options: [
-        { id: "q08a", poles: { EI: "E", HL: "H" }, text: "当场说「我其实很气」，说完很快就松了。" },
-        { id: "q08b", poles: { EI: "I", HL: "H" }, text: "嘴上说没事，回去越想越委屈，情绪还在烧。" },
-        { id: "q08c", poles: { EI: "E", HL: "L" }, text: "当面接受，语气很平，之后保持距离。" },
-        { id: "q08d", poles: { EI: "I", HL: "L" }, text: "说没事，心里把这段关系降级，不再提。" }
+        { id: "q08a", poles: { EI: "E", HL: "H" }, text: "直接说「我还在气」，说完就消。" },
+        { id: "q08b", poles: { EI: "I", HL: "H" }, text: "嘴上没事，心里火没灭。" },
+        { id: "q08c", poles: { EI: "E", HL: "L" }, text: "微笑收下，关系降半格。" },
+        { id: "q08d", poles: { EI: "I", HL: "L" }, text: "说没事，心里直接归档。" }
       ]
     },
     {
       id: "q09",
       pair: ["CA", "NR"],
       label: "关系消耗",
-      text: "面对一段明显在消耗你的关系，你最近一个月最可能：",
+      text: "一段关系很耗电。你？",
       options: [
-        { id: "q09a", poles: { CA: "C", NR: "N" }, text: "用一句半开玩笑的话把边界说出来，先试探。" },
-        { id: "q09b", poles: { CA: "A", NR: "N" }, text: "继续相处，用梗和自嘲消化，等对方自己懂。" },
-        { id: "q09c", poles: { CA: "C", NR: "R" }, text: "列事实、设期限、谈条件，不行就撤。" },
-        { id: "q09d", poles: { CA: "A", NR: "R" }, text: "减少回复、慢慢淡出，不做正式告别。" }
+        { id: "q09a", poles: { CA: "C", NR: "N" }, text: "半开玩笑：你是不是有点费电？" },
+        { id: "q09b", poles: { CA: "A", NR: "N" }, text: "继续处，用梗消化，等 TA 开窍。" },
+        { id: "q09c", poles: { CA: "C", NR: "R" }, text: "摆事实、定期限，不行就撤。" },
+        { id: "q09d", poles: { CA: "A", NR: "R" }, text: "慢慢不回，体面淡出。" }
       ]
     },
     {
       id: "q10",
       pair: ["CA", "HL"],
       label: "冷战现场",
-      text: "和重要的人冷战了。你最近一个月最可能：",
+      text: "和重要的人冷战。你？",
       options: [
-        { id: "q10a", poles: { CA: "C", HL: "H" }, text: "主动约谈，把话挑明，哪怕会吵起来。" },
-        { id: "q10b", poles: { CA: "A", HL: "H" }, text: "先发一条带情绪的消息，等对方接。" },
-        { id: "q10c", poles: { CA: "C", HL: "L" }, text: "冷静列出问题，发一段结构化的长文。" },
-        { id: "q10d", poles: { CA: "A", HL: "L" }, text: "不联系，先让时间处理。" }
+        { id: "q10a", poles: { CA: "C", HL: "H" }, text: "直接约谈：今天说清楚。" },
+        { id: "q10b", poles: { CA: "A", HL: "H" }, text: "先甩一条带情绪的消息。" },
+        { id: "q10c", poles: { CA: "C", HL: "L" }, text: "冷静发一篇结构化作小作文。" },
+        { id: "q10d", poles: { CA: "A", HL: "L" }, text: "不联系，让时间处理。" }
       ]
     },
     {
       id: "q11",
       pair: ["NR", "HL"],
       label: "聊天现场",
-      text: "收到一条阴阳怪气的消息。你最近一个月最可能：",
+      text: "收到一条阴阳怪气。你？",
       options: [
-        { id: "q11a", poles: { NR: "N", HL: "H" }, text: "立刻用更抽象的梗回怼，先赢下这口气。" },
-        { id: "q11b", poles: { NR: "R", HL: "H" }, text: "直接截原话，逐句问「你什么意思」。" },
-        { id: "q11c", poles: { NR: "N", HL: "L" }, text: "不回，脑内写十个冷笑话版本，自己乐。" },
-        { id: "q11d", poles: { NR: "R", HL: "L" }, text: "截图存档，冷静想好措辞再回或不回。" }
+        { id: "q11a", poles: { NR: "N", HL: "H" }, text: "用更抽象的梗怼回去。" },
+        { id: "q11b", poles: { NR: "R", HL: "H" }, text: "截原话：你什么意思？" },
+        { id: "q11c", poles: { NR: "N", HL: "L" }, text: "不回，脑内写十个冷笑话。" },
+        { id: "q11d", poles: { NR: "R", HL: "L" }, text: "截图存档，想好再回。" }
       ]
     },
     {
       id: "q12",
       pair: ["EI", "CA"],
       label: "周日晚间",
-      text: "周日晚上发现明天要交的东西方向错了。你最近一个月最可能：",
+      text: "周日晚上，发现明天要交的东西方向全错。你？",
       options: [
-        { id: "q12a", poles: { EI: "E", CA: "C" }, text: "立刻在群里说明风险，拉大家对齐，今晚重排。" },
-        { id: "q12b", poles: { EI: "I", CA: "C" }, text: "先自己改一版能交的，明早再解释。" },
-        { id: "q12c", poles: { EI: "E", CA: "A" }, text: "先发朋友圈或群里自嘲「草台班子」，让大家知道不是我的锅。" },
-        { id: "q12d", poles: { EI: "I", CA: "A" }, text: "关电脑先睡，明天到现场再说。" }
+        { id: "q12a", poles: { EI: "E", CA: "C" }, text: "群里说明风险，今晚重排。" },
+        { id: "q12b", poles: { EI: "I", CA: "C" }, text: "先偷偷改一版，明早再说。" },
+        { id: "q12c", poles: { EI: "E", CA: "A" }, text: "发圈自嘲：草台班子实锤。" },
+        { id: "q12d", poles: { EI: "I", CA: "A" }, text: "关电脑睡觉，明天现场发挥。" }
       ]
     }
   ];
